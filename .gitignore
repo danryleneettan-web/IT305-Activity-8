@@ -1,0 +1,81 @@
+# ==========================================
+# Credentials & Secrets (CRITICAL)
+# ==========================================
+*.pem
+*.key
+*.pkcs12
+*service-account*.json
+serviceAccountKey*.json
+migration-credentials.csv
+*.env
+.env*
+!*.env.example
+
+# ==========================================
+# Heavy Build Folders: Flutter & Dart
+# ==========================================
+build/
+**/build/
+.dart_tool/
+**/.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+
+# Android build & local settings
+**/android/.gradle/
+**/android/local.properties
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+*.apk
+*.aab
+
+# iOS & macOS build artifacts
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/.last_build_id
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/**/Pods/
+**/macos/Flutter/GeneratedPluginRegistrant.swift
+
+# Windows & Linux desktop builds
+**/windows/flutter/ephemeral/
+**/linux/flutter/ephemeral/
+
+# ==========================================
+# Node.js & Dependencies
+# ==========================================
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ==========================================
+# Firebase
+# ==========================================
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+
+# ==========================================
+# IDEs & System Files
+# ==========================================
+.idea/
+**/.idea/
+*.iml
+**/*.iml
+*.ipr
+*.iws
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+tmp/
+temp/

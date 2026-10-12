@@ -1,0 +1,16 @@
+{
+  "id": "/",
+  "name": "CoopConnect Cooperative Portal",
+  "short_name": "CoopConnect",
+  "description": "CoopConnect member and cooperative staff portal.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fff0f5",
+  "theme_color": "#682744",
+  "icons": [
+    { "src": "/icons/coopconnect-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/coopconnect-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

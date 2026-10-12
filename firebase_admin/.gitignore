@@ -1,0 +1,3 @@
+node_modules/
+migration-credentials.csv
+service-account*.json

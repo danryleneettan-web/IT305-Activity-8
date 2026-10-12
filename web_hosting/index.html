@@ -1,0 +1,1799 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>CoopConnect | Cooperative member portal</title>
+    <meta name="theme-color" content="#682744">
+    <meta name="description" content="CoopConnect cooperative member portal. Install the app on Android or iPhone.">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="CoopConnect">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="apple-touch-icon" href="/icons/coopconnect-192.png">
+    <link rel="stylesheet" href="assets/styles.css">
+    <style>
+        /* Smooth modal overlays and responsive touches */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(86, 35, 63, 0.45);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-card {
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .close-modal {
+            position: absolute;
+            top: 22px;
+            right: 22px;
+            background: rgba(181, 93, 130, 0.12);
+            border: 1px solid rgba(181, 93, 130, 0.25);
+            color: var(--wine);
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1;
+            box-shadow: none;
+            transition: all 0.2s ease;
+        }
+        .close-modal:hover {
+            background: var(--wine);
+            color: #fff;
+            transform: scale(1.06);
+        }
+        .survey-card {
+            margin-bottom: 20px;
+        }
+        .survey-done {
+            display: inline-block;
+            background: #fff0f5;
+            color: var(--rose);
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        .chip-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .chip-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--line);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .chip-label input {
+            display: inline;
+            width: auto;
+            margin: 0;
+        }
+        .db-status-bar {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--rose);
+            background: #fff0f5;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-left: 12px;
+        }
+        .db-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 6px #22c55e;
+        }
+        /* Mobile menu toggle */
+        @media (max-width: 920px) {
+            .staff-mobile-nav {
+                display: flex;
+                background: linear-gradient(135deg, #56233f, #743650);
+                padding: 12px 18px;
+                color: #fff;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .staff-mobile-nav button {
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body class="home-body" id="page-body">
+
+    <!-- ========================================== -->
+    <!-- 1. PUBLIC LANDING VIEW (Matches Image 2)   -->
+    <!-- ========================================== -->
+    <div id="landing-view">
+        <header class="home-nav">
+            <a class="brand-mini" href="javascript:void(0)">
+                <span class="nav-mark">CC</span>
+                <span>CoopConnect</span>
+            </a>
+            <div style="display: flex; align-items: center;">
+                <div class="db-status-bar" title="Connected to Firebase Realtime Database">
+                    <span class="db-dot"></span> Firebase RTDB Live
+                </div>
+            </div>
+            <nav class="home-links">
+                <a href="javascript:void(0)" onclick="openAuthModal('member')">Member Login</a>
+                <a href="#install-app">Get the app</a>
+                <a class="portal-link" href="javascript:void(0)" onclick="openAuthModal('staff')">Staff Portal</a>
+            </nav>
+        </header>
+
+        <main class="home-main">
+            <section class="home-hero">
+                <p class="eyebrow">Multipurpose cooperative</p>
+                <h1>Your cooperative information,<br><em>clear and connected.</em></h1>
+                <p class="hero-copy">CoopConnect makes it simple for members to keep their personal information current while giving staff a secure, organized records portal.</p>
+                <div class="hero-actions">
+                    <button class="button" type="button" onclick="openAuthModal('member')">Access your account</button>
+                    <a class="text-link" href="#features">Learn more &darr;</a>
+                </div>
+                <div class="home-stats">
+                    <div><strong>Secure</strong><span>Member access</span></div>
+                    <div><strong>Simple</strong><span>Profile updates</span></div>
+                    <div><strong>Organized</strong><span>Staff records</span></div>
+                </div>
+            </section>
+
+            <aside class="hero-card">
+                <div class="mini-logo">CC</div>
+                <p class="eyebrow">Member portal</p>
+                <h2>Keep your records up to date.</h2>
+                <ul>
+                    <li>Update personal &amp; contact details</li>
+                    <li>Manage family information</li>
+                    <li>Print your member profile</li>
+                </ul>
+                <button class="button" type="button" onclick="openAuthModal('member')">Sign in to continue</button>
+            </aside>
+        </main>
+
+        <section class="feature-row" id="features">
+            <article><span>01</span><h3>For members</h3><p>Review and update your information anytime.</p></article>
+            <article><span>02</span><h3>For staff</h3><p>Create accounts and manage cooperative records.</p></article>
+            <article><span>03</span><h3>For everyone</h3><p>Clear records for a stronger cooperative.</p></article>
+        </section>
+        <section class="feature-row" id="install-app" style="padding-top: 12px;">
+            <article style="grid-column: 1 / -1;">
+                <span>USE ON YOUR PHONE</span>
+                <h2>Install CoopConnect</h2>
+                <p>Android: install CoopConnect from Chrome or your browser menu. iPhone: open this site in Safari, tap Share, then choose “Add to Home Screen.”</p>
+                <div class="hero-actions">
+                    <button class="button" id="install-pwa-button" type="button" hidden>Install CoopConnect</button>
+                    <a class="button secondary" href="https://coop-692bf.web.app/">Open CoopConnect</a>
+                </div>
+            </article>
+        </section>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- 2. AUTH MODAL (Member & Staff login tabs)  -->
+    <!-- ========================================== -->
+    <div class="modal-overlay" id="auth-modal">
+        <main class="auth-card modal-card">
+            <button class="close-modal" type="button" onclick="closeAuthModal()" aria-label="Close">&times;</button>
+            <div class="brand">
+                <span class="brand-mark">CC</span>
+                <div>
+                    <h1>CoopConnect</h1>
+                    <p>Member information portal</p>
+                </div>
+            </div>
+
+            <div id="auth-alert" class="alert error" style="display:none; margin-bottom: 18px;"></div>
+
+            <div class="tabs">
+                <button class="tab active" data-tab="member" onclick="switchAuthTab('member')">Member</button>
+                <button class="tab" data-tab="staff" onclick="switchAuthTab('staff')">Staff</button>
+            </div>
+
+            <!-- Member Form -->
+            <form id="member-form" class="login-form active" onsubmit="handleMemberLogin(event)">
+                <label>Email address (new accounts) or account number (legacy accounts)
+                    <input id="login-member-account" name="account_number" required placeholder="Use email for new accounts; account number for legacy accounts">
+                </label>
+                <label>Password
+                    <span class="password-input">
+                        <input id="login-member-password" type="password" name="password" required placeholder="Enter password">
+                        <button class="password-toggle" type="button" onclick="togglePassword('login-member-password', this)">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6Z"/>
+                                <circle cx="12" cy="12" r="2.8"/>
+                            </svg>
+                        </button>
+                    </span>
+                </label>
+                <button class="button" type="submit" id="btn-member-login">Sign in as member</button>
+                <p class="hint" style="margin-top: 10px;">New here? Create your own member account.</p>
+                <button class="text-link" type="button" onclick="openMemberRegistration()">Create a member account</button>
+                <button class="text-link" type="button" onclick="sendMemberPasswordReset()">Forgot password?</button>
+            </form>
+
+            <form id="member-register-form" class="login-form" onsubmit="handleMemberRegistration(event)">
+                <p class="hint">Create an account with your email to sign in on any device. Save the account number shown after registration.</p>
+                <label>First name<input id="register-first-name" required autocomplete="given-name"></label>
+                <label>Last name<input id="register-last-name" required autocomplete="family-name"></label>
+                <label>Email address<input id="register-email" type="email" required autocomplete="email"></label>
+                <label>Password<input id="register-password" type="password" required minlength="8" autocomplete="new-password"></label>
+                <label>Confirm password<input id="register-password-confirm" type="password" required minlength="8" autocomplete="new-password"></label>
+                <button class="button" type="submit" id="btn-member-register">Create account</button>
+                <button class="text-link" type="button" onclick="switchAuthTab('member')">Back to sign in</button>
+            </form>
+
+            <!-- Staff Form -->
+            <form id="staff-form" class="login-form" onsubmit="handleStaffLogin(event)">
+                <label>Username
+                    <input id="login-staff-username" name="username" required placeholder="Enter username">
+                </label>
+                <label>Password
+                    <span class="password-input">
+                        <input id="login-staff-password" type="password" name="password" required placeholder="Enter password">
+                        <button class="password-toggle" type="button" onclick="togglePassword('login-staff-password', this)">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6Z"/>
+                                <circle cx="12" cy="12" r="2.8"/>
+                            </svg>
+                        </button>
+                    </span>
+                </label>
+                <button class="button" type="submit" id="btn-staff-login">Sign in as staff</button>
+                <p class="hint" style="margin-top: 10px;">Staff sign-in is issued by the cooperative administrator.</p>
+            </form>
+        </main>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- 3. MEMBER PORTAL VIEW                      -->
+    <!-- ========================================== -->
+    <div id="member-view" style="display: none;">
+        <header>
+            <a class="brand-mini" href="javascript:void(0)" onclick="showMemberDashboard()">CC <span>CoopConnect</span></a>
+            <nav>
+                <a href="javascript:void(0)" onclick="showMemberDashboard()">Dashboard</a>
+                <a href="javascript:void(0)" onclick="openMemberSurveys()">Surveys</a>
+                <a href="javascript:void(0)" onclick="openEditProfileModal()">My Profile</a>
+                <a href="javascript:void(0)" onclick="logout()">Logout</a>
+            </nav>
+        </header>
+
+        <main class="container">
+            <p class="eyebrow">Member portal</p>
+            <h1 id="member-welcome-name">Welcome back, Maria Santos.</h1>
+
+            <section class="profile-summary">
+                <div class="avatar" id="member-avatar">MS</div>
+                <div>
+                    <h2 id="member-full-name">Maria Santos</h2>
+                    <p id="member-sub-info">2026-0001 &middot; Teacher</p>
+                    <div style="display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap;">
+                        <button class="button" type="button" onclick="openEditProfileModal()">View or update profile</button>
+                        <button class="button" type="button" onclick="openMemberSurveys()">Take surveys</button>
+                        <button class="button secondary" type="button" onclick="printProfile()">Print profile</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="grid member-details">
+                <article>
+                    <h3>Contact Information</h3>
+                    <p id="member-contact-info">09171234567<br>Malolos, Bulacan</p>
+                </article>
+                <article>
+                    <h3>Employment &amp; Civil Status</h3>
+                    <p id="member-work-info">Civil Status: Married<br>Employer: DepEd Bulacan</p>
+                </article>
+            </section>
+        </main>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- 4. STAFF PORTAL VIEW                       -->
+    <!-- ========================================== -->
+    <div id="staff-view" style="display: none;">
+        <!-- Backdrop for mobile drawer -->
+        <div class="sidebar-backdrop" id="staff-sidebar-backdrop" onclick="toggleStaffDrawer(false)"></div>
+
+        <!-- Mobile Topbar with Hamburger button -->
+        <div class="staff-mobile-topbar">
+            <button class="staff-burger-btn" type="button" aria-label="Open navigation menu" onclick="toggleStaffDrawer(true)">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <a class="brand-mini" href="javascript:void(0)" onclick="switchStaffTab('overview')">
+                <span class="nav-mark">CC</span>
+                <span>CoopConnect</span>
+            </a>
+            <button class="button secondary" style="padding: 6px 12px; font-size: 12px; border-radius: 8px;" onclick="logout()">Sign out</button>
+        </div>
+
+        <div class="staff-shell">
+            <aside class="staff-shared-sidebar" id="staff-shared-sidebar">
+                <button class="staff-sidebar-close" type="button" aria-label="Close menu" onclick="toggleStaffDrawer(false)">&times;</button>
+                <a class="staff-brand" href="javascript:void(0)" onclick="switchStaffTab('overview')"><span>CC</span> CoopConnect</a>
+                <p class="sidebar-label">Cooperative admin</p>
+                <nav class="staff-menu">
+                    <a href="javascript:void(0)" id="staff-nav-overview" class="active" onclick="switchStaffTab('overview')">Overview</a>
+                    <a href="javascript:void(0)" id="staff-nav-members" onclick="switchStaffTab('members')">Member records</a>
+                    <a href="javascript:void(0)" onclick="openAddMemberModal()">Add new member</a>
+                    <a href="javascript:void(0)" id="staff-nav-surveys" onclick="switchStaffTab('surveys')">Survey management</a>
+                    <a href="javascript:void(0)" id="staff-nav-reports" onclick="switchStaffTab('reports')">Reports</a>
+                    <a href="javascript:void(0)" id="staff-nav-updates" onclick="switchStaffTab('updates')">Recent updates</a>
+                </nav>
+                <div class="staff-profile">
+                    <span>A</span>
+                    <div><strong>Admin User</strong><small>Cooperative staff</small></div>
+                </div>
+                <a class="staff-logout" href="javascript:void(0)" onclick="logout()">Sign out</a>
+            </aside>
+
+            <main class="staff-dashboard" style="flex: 1;">
+                <!-- Staff Overview Section -->
+                <div id="staff-sec-overview">
+                    <div class="staff-heading">
+                        <div>
+                            <p class="eyebrow">Cooperative management</p>
+                            <h1>Admin dashboard</h1>
+                            <p>Manage member records and keep information up to date in Firebase Realtime Database.</p>
+                        </div>
+                        <div class="welcome-chip">Welcome back, Admin</div>
+                    </div>
+
+                    <section class="staff-metrics">
+                        <article>
+                            <span class="metric-icon">◎</span>
+                            <div>
+                                <small>Total members</small>
+                                <strong id="metric-total-members">2</strong>
+                                <p>Registered accounts</p>
+                            </div>
+                        </article>
+                        <article>
+                            <span class="metric-icon">↻</span>
+                            <div>
+                                <small>Active surveys</small>
+                                <strong id="metric-active-surveys">1</strong>
+                                <p>Available for members</p>
+                            </div>
+                        </article>
+                        <article>
+                            <span class="metric-icon">◉</span>
+                            <div>
+                                <small>Survey responses</small>
+                                <strong id="metric-total-submissions">1</strong>
+                                <p>Recorded submissions</p>
+                            </div>
+                        </article>
+                    </section>
+
+                    <section class="staff-content-grid">
+                        <article class="activity-panel">
+                            <div class="panel-title">
+                                <h2>Recent member activity</h2>
+                                <a href="javascript:void(0)" onclick="switchStaffTab('members')">View all</a>
+                            </div>
+                            <div id="staff-recent-members">
+                                <!-- Populated dynamically from Firebase -->
+                            </div>
+                        </article>
+
+                        <aside class="quick-panel">
+                            <h2>Quick actions</h2>
+                            <p>Common tasks for staff.</p>
+                            <button class="button" style="width: 100%; margin-bottom: 12px;" onclick="openAddMemberModal()">Add new member</button>
+                            <a class="quick-link" href="javascript:void(0)" onclick="switchStaffTab('surveys')">Manage surveys <span>&rarr;</span></a>
+                            <a class="quick-link" href="javascript:void(0)" onclick="switchStaffTab('reports')">View reports <span>&rarr;</span></a>
+                            <a class="quick-link" href="javascript:void(0)" onclick="switchStaffTab('members')">Manage members <span>&rarr;</span></a>
+                        </aside>
+                    </section>
+                </div>
+
+                <!-- Staff Member Records Section -->
+                <div id="staff-sec-members" style="display: none;">
+                    <div class="page-actions" style="margin-bottom: 24px;">
+                        <div>
+                            <p class="eyebrow">Member directory</p>
+                            <h1>Member records</h1>
+                        </div>
+                        <button class="button" onclick="openAddMemberModal()">+ Add new member</button>
+                    </div>
+
+                    <div class="search">
+                        <input id="staff-search-input" placeholder="Search by name or account number..." oninput="filterStaffMembers(this.value)">
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Account #</th>
+                                    <th>Member Name</th>
+                                    <th>Contact</th>
+                                    <th>Civil Status</th>
+                                    <th>Updated At</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staff-members-tbody">
+                                <!-- Rendered dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Staff Surveys Section (Matches Image 2 & surveys.php) -->
+                <div id="staff-sec-surveys" style="display: none;">
+                    <div class="page-actions" style="margin-bottom: 24px;">
+                        <div>
+                            <p class="eyebrow">SET B SURVEY MODULE</p>
+                            <h1>Survey management</h1>
+                        </div>
+                    </div>
+
+                    <!-- Create Survey Card -->
+                    <form id="staff-survey-form" class="card" onsubmit="saveStaffSurvey(event)" style="margin-bottom: 28px;">
+                        <h2>Create survey</h2>
+                        <div class="two-col">
+                            <label>Survey title<input id="staff-survey-title" required placeholder="e.g. Annual Member Satisfaction Survey"></label>
+                            <label>Status
+                                <select id="staff-survey-status">
+                                    <option value="draft">Draft</option>
+                                    <option value="active" selected>Active</option>
+                                </select>
+                            </label>
+                            <label>Opening date<input id="staff-survey-opens" type="datetime-local" required></label>
+                            <label>Closing date<input id="staff-survey-closes" type="datetime-local" required></label>
+                        </div>
+                        <label>Description<textarea id="staff-survey-description" rows="4" placeholder="Brief survey background and instructions for members..."></textarea></label>
+                        <section class="form-section">
+                            <div class="panel-title" style="margin-bottom: 16px;">
+                                <h2>Questions</h2>
+                                <button class="button secondary" type="button" onclick="addStaffSurveyQuestion()">Add question</button>
+                            </div>
+                            <div id="staff-survey-questions"></div>
+                        </section>
+                        <button class="button" type="submit">Save survey</button>
+                    </form>
+
+                    <!-- Existing Surveys & Reports Section -->
+                    <section class="card" id="existing-surveys">
+                        <h2>Existing surveys and reports</h2>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Survey</th>
+                                        <th>Status</th>
+                                        <th>Schedule</th>
+                                        <th>Respondents</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="staff-surveys-table-body">
+                                    <!-- Rendered dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Staff Reports Section (Matches survey_results.php) -->
+                <div id="staff-sec-reports" style="display: none;">
+                    <div class="page-actions" style="margin-bottom: 24px;">
+                        <div>
+                            <p class="eyebrow">SET B SURVEY MODULE</p>
+                            <h1>Survey reports</h1>
+                            <p>Detailed response metrics, visual percentage bars, and member participation analytics.</p>
+                        </div>
+                        <button class="button secondary" onclick="window.print()">Print all reports</button>
+                    </div>
+                    <div id="staff-reports-content">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- Staff Recent Updates Section -->
+                <div id="staff-sec-updates" style="display: none;">
+                    <div class="page-actions" style="margin-bottom: 24px;">
+                        <div>
+                            <p class="eyebrow">COOPERATIVE ACTIVITY</p>
+                            <h1>Recent updates</h1>
+                            <p>Latest member registrations, profile changes, and survey activities.</p>
+                        </div>
+                    </div>
+                    <div id="staff-updates-content" class="card"></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- 5. EDIT PROFILE / ADD MEMBER MODAL         -->
+    <!-- ========================================== -->
+    <div class="modal-overlay" id="member-form-modal">
+        <main class="auth-card modal-card" style="width: min(800px, calc(100% - 32px));">
+            <button class="close-modal" type="button" onclick="closeMemberFormModal()">&times;</button>
+            <div class="brand">
+                <span class="brand-mark">CC</span>
+                <div>
+                    <h1 id="member-form-title">Member Information</h1>
+                    <p>CoopConnect Member Record</p>
+                </div>
+            </div>
+
+            <div id="member-form-alert" class="alert error" style="display:none; margin-bottom: 18px;"></div>
+
+            <form id="profile-editor-form" onsubmit="saveMemberForm(event)">
+                <input type="hidden" id="edit-member-id">
+                <input type="hidden" id="edit-member-key">
+
+                <div class="form-section">
+                    <h3>Personal Information</h3>
+                    <div class="two-col">
+                        <label>Account Number
+                            <input id="field-account-number" readonly style="opacity: 0.7;">
+                        </label>
+                        <label>Civil Status
+                            <select id="field-civil-status" onchange="handleCivilStatusChange(this.value)">
+                                <option value="Single">Single</option>
+                                <option value="Married" selected>Married</option>
+                                <option value="Widowed">Widowed</option>
+                                <option value="Separated">Separated</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="two-col">
+                        <label>First Name
+                            <input id="field-first-name" required>
+                        </label>
+                        <label>Last Name
+                            <input id="field-last-name" required>
+                        </label>
+                    </div>
+                    <div class="two-col">
+                        <label>Middle Name
+                            <input id="field-middle-name">
+                        </label>
+                        <label>Birthday
+                            <input id="field-birthday" type="date" required>
+                        </label>
+                    </div>
+                    <div class="two-col">
+                        <label>Contact Number (11 digits)
+                            <input id="field-contact-number" maxlength="11" required>
+                        </label>
+                        <label>Address
+                            <input id="field-address" required>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Employment Information</h3>
+                    <div class="two-col">
+                        <label>Occupation
+                            <input id="field-occupation">
+                        </label>
+                        <label>Employer
+                            <input id="field-employer">
+                        </label>
+                    </div>
+                    <label>Employer Address
+                        <input id="field-employer-address">
+                    </label>
+                </div>
+
+                <div class="form-section" id="family-section">
+                    <h3>Family Details</h3>
+                    <div class="two-col">
+                        <label>Spouse Name
+                            <input id="field-spouse-name">
+                        </label>
+                        <label>Spouse Occupation
+                            <input id="field-spouse-occupation">
+                        </label>
+                    </div>
+                    <label>Spouse Employer
+                        <input id="field-spouse-employer">
+                    </label>
+
+                    <h4 style="margin: 18px 0 8px;">Children</h4>
+                    <div id="children-list-container">
+                        <!-- Dynamic children rows -->
+                    </div>
+                    <button type="button" class="button secondary" style="font-size: 13px; margin-top: 6px;" onclick="addChildRow()">+ Add child</button>
+                </div>
+
+                <div class="form-section">
+                    <h3>Parents &amp; References</h3>
+                    <div class="two-col">
+                        <label>Father's Name
+                            <input id="field-father-name">
+                        </label>
+                        <label>Mother's Name
+                            <input id="field-mother-name">
+                        </label>
+                    </div>
+                    <div class="two-col">
+                        <label>Reference 1
+                            <input id="field-ref-one">
+                        </label>
+                        <label>Reference 2
+                            <input id="field-ref-two">
+                        </label>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 14px;">
+                    <button type="button" class="button secondary" onclick="closeMemberFormModal()">Cancel</button>
+                    <button type="submit" class="button" id="btn-save-member">Save to Firebase</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- 6. MEMBER SURVEYS & TAKE SURVEY MODAL      -->
+    <!-- ========================================== -->
+    <div class="modal-overlay" id="surveys-modal">
+        <main class="auth-card modal-card" style="width: min(720px, calc(100% - 32px));">
+            <button class="close-modal" type="button" onclick="closeSurveysModal()">&times;</button>
+            <div class="brand">
+                <span class="brand-mark">CC</span>
+                <div>
+                    <h1>Member Surveys</h1>
+                    <p>Help us improve your cooperative services</p>
+                </div>
+            </div>
+
+            <div id="survey-content-container">
+                <!-- Populated dynamically -->
+            </div>
+        </main>
+    </div>
+
+
+    <!-- ======================================================= -->
+    <!-- JAVASCRIPT: Firebase Realtime Database Client           -->
+    <!-- ======================================================= -->
+    <script>
+        if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('/service-worker.js'));
+        let pendingInstallPrompt = null;
+        window.addEventListener('beforeinstallprompt', event => {
+            event.preventDefault();
+            pendingInstallPrompt = event;
+            const installButton = document.getElementById('install-pwa-button');
+            if (installButton) installButton.hidden = false;
+        });
+        window.addEventListener('appinstalled', () => {
+            pendingInstallPrompt = null;
+            const installButton = document.getElementById('install-pwa-button');
+            if (installButton) installButton.hidden = true;
+        });
+        document.getElementById('install-pwa-button')?.addEventListener('click', async () => {
+            if (!pendingInstallPrompt) return;
+            pendingInstallPrompt.prompt();
+            await pendingInstallPrompt.userChoice;
+            pendingInstallPrompt = null;
+        });
+        const FIREBASE_BASE = 'https://coop-692bf-default-rtdb.firebaseio.com/cooperative_portal';
+        const FIREBASE_API_KEY = 'AIzaSyB9fLFhHZT75mbuMu_RmX0PwmNjlyxoBKw';
+        const FIREBASE_IDENTITY_API = 'https://identitytoolkit.googleapis.com/v1';
+        const FIREBASE_TOKEN_API = 'https://securetoken.googleapis.com/v1/token';
+        const FIREBASE_AUTH_DOMAIN = 'coop-692bf.firebaseapp.com';
+
+        let appData = {
+            members: {},
+            staff: {},
+            surveys: {},
+            survey_submissions: {}
+        };
+
+        let currentUser = null; // In-memory Firebase Auth session; never persist ID tokens in localStorage.
+
+        async function firebaseAuth(method, payload) {
+            const response = await fetch(`${FIREBASE_IDENTITY_API}/${method}?key=${FIREBASE_API_KEY}`, {
+                method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+            });
+            const body = await response.json();
+            if (!response.ok) {
+                const code = body?.error?.message || '';
+                if (['INVALID_LOGIN_CREDENTIALS', 'EMAIL_NOT_FOUND', 'INVALID_PASSWORD'].includes(code)) {
+                    throw new Error('Firebase did not accept those sign-in details. Check your email and password, or create a member account first.');
+                }
+                if (code === 'OPERATION_NOT_ALLOWED') {
+                    throw new Error('Email/password sign-in is not enabled for this Firebase project yet.');
+                }
+                throw new Error(code || 'Firebase Authentication failed.');
+            }
+            return body;
+        }
+
+        async function enforceMemberPasswordChange() {
+            const member = currentUser?.data;
+            if (!member || !(member.forcePasswordChange || member.force_password_change)) return;
+            const password = prompt('Welcome! As a new member, your default password is your account number. Please choose your new personal password (at least 8 characters):');
+            if (!password || password.length < 8) throw new Error('A new password of at least 8 characters is required. Please sign in again when ready.');
+            if (password !== prompt('Confirm your new password:')) throw new Error('The passwords did not match. Please sign in again.');
+            const auth = await firebaseAuth('accounts:update', {idToken:currentUser.idToken, password, returnSecureToken:true});
+            currentUser.idToken = auth.idToken;
+            currentUser.refreshToken = auth.refreshToken;
+            currentUser.expiresAt = Date.now() + Number(auth.expiresIn || 3600) * 1000;
+            const response = await firebaseDbFetch(`members/${encodeURIComponent(currentUser.id)}`, {
+                method:'PATCH', headers:{'Content-Type':'application/json'}, body:JSON.stringify({forcePasswordChange:false, force_password_change:false, updatedAt:new Date().toISOString()})
+            });
+            if (!response.ok) throw new Error('Password changed, but the profile could not be updated. Contact cooperative staff.');
+            member.forcePasswordChange = false;
+            member.force_password_change = false;
+            alert('Your password has been successfully updated! Welcome to CoopConnect.');
+        }
+
+        function tokenClaims(token) {
+            try { return JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))); } catch (_) { return {}; }
+        }
+
+        async function refreshAuthToken() {
+            if (!currentUser?.refreshToken) throw new Error('Please sign in again.');
+            if (Date.now() < currentUser.expiresAt - 120000) return;
+            const response = await fetch(`${FIREBASE_TOKEN_API}?key=${FIREBASE_API_KEY}`, {
+                method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                body: new URLSearchParams({grant_type:'refresh_token', refresh_token:currentUser.refreshToken})
+            });
+            const body = await response.json();
+            if (!response.ok) { logout(); throw new Error('Your session expired. Please sign in again.'); }
+            currentUser.idToken = body.id_token;
+            currentUser.refreshToken = body.refresh_token;
+            currentUser.expiresAt = Date.now() + Number(body.expires_in || 3600) * 1000;
+        }
+
+        async function firebaseDbFetch(path, options = {}) {
+            await refreshAuthToken();
+            const cleanPath = path ? `/${path.replace(/^\/+/, '')}` : '';
+            const url = `${FIREBASE_BASE}${cleanPath}.json?auth=${encodeURIComponent(currentUser.idToken)}`;
+            const response = await fetch(url, options);
+            if (response.status === 401 || response.status === 403) throw new Error('Firebase denied this action. Check your account role and database rules.');
+            return response;
+        }
+
+        // Fetch data from Firebase Realtime Database
+        async function fetchFirebaseData() {
+            try {
+                if (!currentUser) throw new Error('Sign in first.');
+                if (currentUser.role === 'staff') {
+                    const res = await firebaseDbFetch('');
+                    if (!res.ok) throw new Error(`Firebase returned ${res.status}`);
+                    const data = await res.json() || {};
+                    appData.members = data.members || {};
+                    appData.staff = data.staff || {};
+                    appData.surveys = data.surveys || {};
+                    appData.survey_submissions = data.survey_submissions || {};
+                } else {
+                    const [memberResponse, surveyResponse] = await Promise.all([
+                        firebaseDbFetch(`members/${encodeURIComponent(currentUser.id)}`),
+                        firebaseDbFetch('surveys')
+                    ]);
+                    if (!memberResponse.ok || !surveyResponse.ok) throw new Error('Could not load your Firebase profile.');
+                    const member = await memberResponse.json();
+                    if (!member || member.authUid !== currentUser.uid) throw new Error('This account is not linked to that member record. Ask cooperative staff for help.');
+                    appData.members = {[currentUser.id]:member};
+                    appData.surveys = await surveyResponse.json() || {};
+                    appData.staff = {};
+                    appData.survey_submissions = {};
+                    currentUser.data = member;
+                }
+                console.log('Firebase data loaded for authenticated user.');
+            } catch (err) {
+                console.error('Firebase fetch error:', err);
+                throw err;
+            }
+        }
+
+        // ---------------- AUTH MODAL & LOGIC ----------------
+        function openAuthModal(role) {
+            document.getElementById('auth-alert').style.display = 'none';
+            document.getElementById('auth-modal').classList.add('active');
+            switchAuthTab(role || 'member');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.remove('active');
+        }
+
+        function switchAuthTab(role) {
+            document.querySelectorAll('#auth-modal .tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('#auth-modal .login-form').forEach(f => f.classList.remove('active'));
+
+            if (role === 'staff') {
+                document.querySelector('.tab[data-tab="staff"]').classList.add('active');
+                document.getElementById('staff-form').classList.add('active');
+            } else {
+                document.querySelector('.tab[data-tab="member"]').classList.add('active');
+                document.getElementById('member-form').classList.add('active');
+            }
+        }
+
+        function openMemberRegistration() {
+            switchAuthTab('member');
+            document.getElementById('member-form').classList.remove('active');
+            document.getElementById('member-register-form').classList.add('active');
+        }
+
+        async function handleMemberRegistration(event) {
+            event.preventDefault();
+            const firstName = document.getElementById('register-first-name').value.trim();
+            const lastName = document.getElementById('register-last-name').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const password = document.getElementById('register-password').value;
+            const confirmation = document.getElementById('register-password-confirm').value;
+            const alertBox = document.getElementById('auth-alert');
+            const submitButton = document.getElementById('btn-member-register');
+            alertBox.style.display = 'none';
+            if (password.length < 8 || password !== confirmation) {
+                alertBox.textContent = password !== confirmation ? 'The passwords do not match.' : 'Use a password of at least 8 characters.';
+                alertBox.style.display = 'block';
+                return;
+            }
+            submitButton.disabled = true;
+            submitButton.textContent = 'Creating account…';
+            let signedUp = null;
+            try {
+                signedUp = await firebaseAuth('accounts:signUp', {
+                    email,
+                    password,
+                    returnSecureToken: true
+                });
+                const profileKey = signedUp.localId;
+                const accountNumber = `PUBLIC-${profileKey.slice(0, 8).toUpperCase()}`;
+                currentUser = {
+                    role: 'member', id: profileKey, uid: signedUp.localId,
+                    idToken: signedUp.idToken, refreshToken: signedUp.refreshToken,
+                    expiresAt: Date.now() + Number(signedUp.expiresIn || 3600) * 1000, data: null
+                };
+                const now = new Date().toISOString();
+                const member = {
+                    id: profileKey, accountNumber, email, authUid: signedUp.localId,
+                    forcePasswordChange: false, firstName, lastName, middleName: '',
+                    civilStatus: 'Single', address: '', contactNumber: '', birthday: '',
+                    occupation: '', employer: '', employerAddress: '', spouseName: '',
+                    spouseOccupation: '', spouseEmployer: '', fatherName: '', motherName: '',
+                    referenceOne: '', referenceTwo: '', children: [], photo: '',
+                    createdAt: now, updatedAt: now
+                };
+                const response = await firebaseDbFetch(`members/${encodeURIComponent(profileKey)}`, {
+                    method: 'PUT', headers: {'Content-Type':'application/json'}, body: JSON.stringify(member)
+                });
+                if (!response.ok) throw new Error(`Firebase returned ${response.status} while saving your profile.`);
+                currentUser.data = member;
+                appData.members = {[profileKey]: member};
+                appData.staff = {}; appData.survey_submissions = {};
+                await fetchFirebaseData();
+                closeAuthModal();
+                alert(`Account created. Sign in on any device with your email address and the password you chose. Save this account number for cooperative records.\n\nAccount number: ${accountNumber}`);
+                renderMemberPortal();
+            } catch (error) {
+                if (signedUp?.idToken) {
+                    try { await firebaseAuth('accounts:delete', {idToken:signedUp.idToken}); } catch (_) {}
+                }
+                currentUser = null;
+                alertBox.textContent = error.message || 'Could not create your account.';
+                alertBox.style.display = 'block';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Create account';
+            }
+        }
+
+        async function sendMemberPasswordReset() {
+            const identifier = document.getElementById('login-member-account').value.trim();
+            const alertBox = document.getElementById('auth-alert');
+            alertBox.style.display = 'none';
+            if (!identifier.includes('@')) {
+                alertBox.textContent = 'Enter the email used for self-registration. For staff-issued legacy accounts, contact cooperative staff to reset your password.';
+                alertBox.style.display = 'block';
+                return;
+            }
+            try {
+                await firebaseAuth('accounts:sendOobCode', {requestType:'PASSWORD_RESET', email:identifier});
+                alertBox.textContent = 'Password reset instructions were sent to your email.';
+            } catch (error) {
+                alertBox.textContent = error.message || 'Could not send password reset instructions.';
+            }
+            alertBox.style.display = 'block';
+        }
+
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const isText = input.type === 'text';
+            input.type = isText ? 'password' : 'text';
+            btn.classList.toggle('is-visible', !isText);
+        }
+
+        // Member Login handler
+        async function handleMemberLogin(e) {
+            e.preventDefault();
+            const account = document.getElementById('login-member-account').value.trim();
+            const password = document.getElementById('login-member-password').value;
+            const alertBox = document.getElementById('auth-alert');
+            const submitBtn = document.getElementById('btn-member-login');
+
+            alertBox.style.display = 'none';
+            submitBtn.textContent = 'Verifying...';
+
+            try {
+                const isEmail = account.includes('@');
+                const auth = await firebaseAuth('accounts:signInWithPassword', {email:isEmail ? account : `${account}@members.${FIREBASE_AUTH_DOMAIN}`, password, returnSecureToken:true});
+                currentUser = {role:'member', id:isEmail ? auth.localId : account, uid:auth.localId, idToken:auth.idToken, refreshToken:auth.refreshToken, expiresAt:Date.now()+Number(auth.expiresIn || 3600)*1000, data:null};
+                await fetchFirebaseData();
+                await enforceMemberPasswordChange();
+                submitBtn.textContent = 'Sign in as member';
+                closeAuthModal();
+                renderMemberPortal();
+            } catch (err) {
+                currentUser = null;
+                submitBtn.textContent = 'Sign in as member';
+                alertBox.textContent = err.message || 'Invalid account number or password.';
+                alertBox.style.display = 'block';
+            }
+        }
+
+        // Staff Login handler
+        async function handleStaffLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-staff-username').value.trim();
+            const password = document.getElementById('login-staff-password').value;
+            const alertBox = document.getElementById('auth-alert');
+            const submitBtn = document.getElementById('btn-staff-login');
+
+            alertBox.style.display = 'none';
+            submitBtn.textContent = 'Verifying...';
+
+            try {
+                const auth = await firebaseAuth('accounts:signInWithPassword', {email:`${username}@staff.${FIREBASE_AUTH_DOMAIN}`, password, returnSecureToken:true});
+                if (tokenClaims(auth.idToken).role !== 'staff') throw new Error('This account is not assigned the cooperative staff role.');
+                currentUser = {role:'staff', id:username, uid:auth.localId, idToken:auth.idToken, refreshToken:auth.refreshToken, expiresAt:Date.now()+Number(auth.expiresIn || 3600)*1000, data:{username,fullName:'Cooperative staff'}};
+                await fetchFirebaseData();
+                submitBtn.textContent = 'Sign in as staff';
+                closeAuthModal();
+                renderStaffPortal();
+            } catch (err) {
+                currentUser = null;
+                submitBtn.textContent = 'Sign in as staff';
+                alertBox.textContent = err.message || 'Invalid staff credentials.';
+                alertBox.style.display = 'block';
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            appData = {members:{}, staff:{}, surveys:{}, survey_submissions:{}};
+            document.getElementById('member-view').style.display = 'none';
+            document.getElementById('staff-view').style.display = 'none';
+            document.getElementById('landing-view').style.display = 'block';
+            document.body.className = 'home-body';
+        }
+
+        // ---------------- MEMBER PORTAL ----------------
+        function renderMemberPortal() {
+            document.getElementById('landing-view').style.display = 'none';
+            document.getElementById('staff-view').style.display = 'none';
+            document.getElementById('member-view').style.display = 'block';
+            document.body.className = '';
+
+            const m = currentUser.data;
+            const name = `${m.first_name || m.firstName || ''} ${m.last_name || m.lastName || ''}`.trim() || 'Coop Member';
+            const initials = `${(m.first_name || m.firstName || 'C')[0]}${(m.last_name || m.lastName || 'M')[0]}`.toUpperCase();
+
+            document.getElementById('member-welcome-name').textContent = `Welcome back, ${name}.`;
+            document.getElementById('member-full-name').textContent = name;
+            document.getElementById('member-avatar').textContent = initials;
+            document.getElementById('member-sub-info').textContent = `${m.account_number || m.accountNumber} \u00B7 ${m.occupation || 'Member'}`;
+
+            document.getElementById('member-contact-info').innerHTML = `${m.contact_number || m.contactNumber || 'Not provided'}<br>${m.address || 'Not provided'}`;
+            document.getElementById('member-work-info').innerHTML = `Civil Status: ${m.civil_status || m.civilStatus || 'Single'}<br>Employer: ${m.employer || 'Not provided'}`;
+        }
+
+        function showMemberDashboard() {
+            renderMemberPortal();
+        }
+
+        function printProfile() {
+            window.print();
+        }
+
+        // ---------------- MEMBER PROFILE MODAL ----------------
+        function openEditProfileModal(memberToEdit) {
+            const m = memberToEdit || currentUser.data;
+            const isStaff = currentUser.role === 'staff';
+
+            document.getElementById('member-form-title').textContent = isStaff ? (memberToEdit ? 'Edit Member Record' : 'Add New Member') : 'Edit My Profile';
+            document.getElementById('member-form-alert').style.display = 'none';
+
+            document.getElementById('edit-member-id').value = m.account_number || m.accountNumber || '';
+            const memberKey = m.id || m.account_number || m.accountNumber || '';
+            document.getElementById('edit-member-key').value = memberKey === 'Auto-generated' ? '' : memberKey;
+            document.getElementById('field-account-number').value = m.account_number || m.accountNumber || 'Auto-generated';
+            document.getElementById('field-first-name').value = m.first_name || m.firstName || '';
+            document.getElementById('field-last-name').value = m.last_name || m.lastName || '';
+            document.getElementById('field-middle-name').value = m.middle_name || m.middleName || '';
+            document.getElementById('field-civil-status').value = m.civil_status || m.civilStatus || 'Single';
+            document.getElementById('field-birthday').value = m.birthday || '2000-01-01';
+            document.getElementById('field-contact-number').value = m.contact_number || m.contactNumber || '';
+            document.getElementById('field-address').value = m.address || '';
+            document.getElementById('field-occupation').value = m.occupation || '';
+            document.getElementById('field-employer').value = m.employer || '';
+            document.getElementById('field-employer-address').value = m.employer_address || m.employerAddress || '';
+            document.getElementById('field-spouse-name').value = m.spouse_name || m.spouseName || '';
+            document.getElementById('field-spouse-occupation').value = m.spouse_occupation || m.spouseOccupation || '';
+            document.getElementById('field-spouse-employer').value = m.spouse_employer || m.spouseEmployer || '';
+            document.getElementById('field-father-name').value = m.father_name || m.fatherName || '';
+            document.getElementById('field-mother-name').value = m.mother_name || m.motherName || '';
+            document.getElementById('field-ref-one').value = m.reference_one || m.referenceOne || '';
+            document.getElementById('field-ref-two').value = m.reference_two || m.referenceTwo || '';
+
+            handleCivilStatusChange(m.civil_status || m.civilStatus || 'Single');
+
+            // Render children
+            const childrenCont = document.getElementById('children-list-container');
+            childrenCont.innerHTML = '';
+            const children = m.children || [];
+            children.forEach(c => {
+                addChildRow(c.name, c.age);
+            });
+
+            document.getElementById('member-form-modal').classList.add('active');
+        }
+
+        function closeMemberFormModal() {
+            document.getElementById('member-form-modal').classList.remove('active');
+        }
+
+        function handleCivilStatusChange(val) {
+            const isSingle = val === 'Single';
+            const famSec = document.getElementById('family-section');
+            if (isSingle) {
+                famSec.classList.add('is-disabled');
+                famSec.querySelectorAll('input, button').forEach(el => el.disabled = true);
+            } else {
+                famSec.classList.remove('is-disabled');
+                famSec.querySelectorAll('input, button').forEach(el => el.disabled = false);
+            }
+        }
+
+        function addChildRow(name = '', age = '') {
+            const container = document.getElementById('children-list-container');
+            const row = document.createElement('div');
+            row.className = 'child-row';
+            row.innerHTML = `
+                <input class="child-name-input" placeholder="Child name" value="${name}">
+                <input class="child-age-input" type="number" min="0" placeholder="Age" value="${age}">
+                <button type="button" class="remove" onclick="this.closest('.child-row').remove()">&times; Remove</button>
+            `;
+            container.appendChild(row);
+        }
+
+        function makeTemporaryPassword() {
+            const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%';
+            const bytes = crypto.getRandomValues(new Uint8Array(18));
+            return Array.from(bytes, byte => alphabet[byte % alphabet.length]).join('');
+        }
+
+        // Save member profile and provision its Firebase Authentication account.
+        async function saveMemberForm(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-save-member');
+            const alertBox = document.getElementById('member-form-alert');
+            btn.textContent = 'Saving to Firebase...';
+
+            let acc = document.getElementById('edit-member-id').value;
+            if (!acc || acc === 'Auto-generated') {
+                // Find the highest existing account number and go one higher
+                const existingNums = Object.values(appData.members)
+                    .map(m => {
+                        const raw = m.account_number || m.accountNumber || '';
+                        const parts = raw.split('-');
+                        return parts.length === 2 ? parseInt(parts[1], 10) : 0;
+                    })
+                    .filter(n => !isNaN(n) && n > 0);
+                const maxNum = existingNums.length > 0 ? Math.max(...existingNums) : 0;
+                acc = `2026-${String(maxNum + 1).padStart(4, '0')}`;
+            }
+
+            const children = [];
+            document.querySelectorAll('#children-list-container .child-row').forEach(row => {
+                const cName = row.querySelector('.child-name-input').value.trim();
+                const cAge = row.querySelector('.child-age-input').value.trim();
+                if (cName) children.push({ name: cName, age: cAge });
+            });
+
+            const existingMember = currentUser.role === 'member'
+                ? currentUser.data
+                : (appData.members[acc] || Object.values(appData.members).find(member => (member.accountNumber || member.account_number) === acc));
+            const profileKey = currentUser.role === 'member'
+                ? currentUser.id
+                : (document.getElementById('edit-member-key').value || acc);
+            const memberObj = {
+                id: profileKey,
+                accountNumber: acc,
+                accountNumber: acc,
+                account_number: acc,
+                first_name: document.getElementById('field-first-name').value.trim(),
+                last_name: document.getElementById('field-last-name').value.trim(),
+                middle_name: document.getElementById('field-middle-name').value.trim(),
+                civil_status: document.getElementById('field-civil-status').value,
+                birthday: document.getElementById('field-birthday').value,
+                contact_number: document.getElementById('field-contact-number').value.trim(),
+                address: document.getElementById('field-address').value.trim(),
+                occupation: document.getElementById('field-occupation').value.trim(),
+                employer: document.getElementById('field-employer').value.trim(),
+                employer_address: document.getElementById('field-employer-address').value.trim(),
+                spouse_name: document.getElementById('field-spouse-name').value.trim(),
+                spouse_occupation: document.getElementById('field-spouse-occupation').value.trim(),
+                spouse_employer: document.getElementById('field-spouse-employer').value.trim(),
+                father_name: document.getElementById('field-father-name').value.trim(),
+                mother_name: document.getElementById('field-mother-name').value.trim(),
+                reference_one: document.getElementById('field-ref-one').value.trim(),
+                reference_two: document.getElementById('field-ref-two').value.trim(),
+                children: children,
+                authUid: existingMember?.authUid || '',
+                force_password_change: existingMember?.force_password_change ?? existingMember?.forcePasswordChange ?? true,
+                updated_at: new Date().toISOString()
+            };
+
+            try {
+                let defaultPassword = null;
+                if (currentUser.role === 'staff' && (!existingMember || !existingMember.authUid)) {
+                    defaultPassword = acc;
+                    try {
+                        const auth = await firebaseAuth('accounts:signUp', {
+                            email: `${acc}@members.${FIREBASE_AUTH_DOMAIN}`,
+                            password: defaultPassword,
+                            returnSecureToken: true
+                        });
+                        memberObj.authUid = auth.localId;
+                        memberObj.force_password_change = true;
+                        memberObj.forcePasswordChange = true;
+                    } catch (authErr) {
+                        console.warn('Auth provision notice:', authErr);
+                    }
+                }
+                const res = await firebaseDbFetch(`members/${encodeURIComponent(profileKey)}`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(memberObj)
+                });
+                if (!res.ok) throw new Error(`Firebase returned ${res.status}`);
+                {
+                    appData.members[profileKey] = memberObj;
+                    closeMemberFormModal();
+
+                    if (currentUser.role === 'member') {
+                        currentUser.data = memberObj;
+                        renderMemberPortal();
+                    } else {
+                        renderStaffMembersTable();
+                        updateStaffMetrics();
+                    }
+                    alert(defaultPassword
+                        ? `Member account created in Firebase!\n\n• Account Number: ${acc}\n• Default Password: ${acc}\n\nThe member can now sign in using their account number and will be prompted to set their permanent password upon first login.`
+                        : 'Saved successfully to Firebase Realtime Database!');
+                }
+            } catch (err) {
+                console.error(err);
+                alertBox.textContent = 'Error saving to Firebase: ' + err.message;
+                alertBox.style.display = 'block';
+            } finally {
+                btn.textContent = 'Save to Firebase';
+            }
+        }
+
+        // ---------------- MEMBER SURVEYS MODAL ----------------
+        async function openMemberSurveys() {
+            const container = document.getElementById('survey-content-container');
+            container.innerHTML = '';
+
+            const surveys = Object.values(appData.surveys || {}).filter(isSurveyOpen);
+            if (surveys.length === 0) {
+                container.innerHTML = '<p>No active surveys are available right now.</p>';
+            } else {
+                for (const s of surveys) {
+                    let hasSubmitted = false;
+                    try {
+                        const existing = await firebaseDbFetch(`survey_submissions/${encodeURIComponent(`${s.id}_${currentUser.uid}`)}`);
+                        if (existing.ok) hasSubmitted = (await existing.json()) !== null;
+                    } catch (_) {}
+
+                    const card = document.createElement('article');
+                    card.className = 'card survey-card';
+                    card.innerHTML = `
+                        <p class="eyebrow">Closes ${s.closes_at || s.closesAt || 'Soon'}</p>
+                        <h2>${s.title}</h2>
+                        <p>${s.description || ''}</p>
+                        <div style="margin-top: 14px;">
+                            ${hasSubmitted 
+                                ? '<span class="survey-done">&#10003; Response Recorded</span>' 
+                                : `<button class="button" onclick="takeSurvey('${s.id}')">Answer survey</button>`
+                            }
+                        </div>
+                    `;
+                    container.appendChild(card);
+                }
+            }
+
+            document.getElementById('surveys-modal').classList.add('active');
+        }
+
+        function isSurveyOpen(survey) {
+            if ((survey.status || 'active').toLowerCase() !== 'active') return false;
+            const now = Date.now();
+            const opens = Date.parse(survey.opensAt || survey.opens_at || '');
+            const closes = Date.parse(survey.closesAt || survey.closes_at || '');
+            return (!Number.isFinite(opens) || now >= opens) && (!Number.isFinite(closes) || now <= closes);
+        }
+
+        function closeSurveysModal() {
+            document.getElementById('surveys-modal').classList.remove('active');
+        }
+
+        function takeSurvey(surveyId) {
+            const s = appData.surveys[surveyId];
+            if (!s || !isSurveyOpen(s)) return;
+
+            const container = document.getElementById('survey-content-container');
+            const questions = s.questions || [];
+
+            let html = `
+                <button class="button secondary" style="margin-bottom: 16px; font-size: 13px;" onclick="openMemberSurveys()">&larr; Back to surveys</button>
+                <h2>${s.title}</h2>
+                <p>${s.description || ''}</p>
+                <form id="take-survey-form" onsubmit="submitSurvey(event, '${surveyId}')" style="margin-top: 20px;">
+            `;
+
+            questions.forEach((q, idx) => {
+                const qType = q.type || q.question_type;
+                html += `
+                    <div class="form-section">
+                        <label style="font-size: 15px; margin-bottom: 8px;"><strong>${idx + 1}. ${q.text || q.question_text}</strong></label>
+                `;
+
+                if (qType === 'rating') {
+                    html += `
+                        <div class="chip-group">
+                            ${[1, 2, 3, 4, 5].map(star => `
+                                <label class="chip-label">
+                                    <input type="radio" name="q_${q.id}" value="${star}" required> ${star} ★
+                                </label>
+                            `).join('')}
+                        </div>
+                    `;
+                } else if (qType === 'yes_no') {
+                    html += `
+                        <div class="chip-group">
+                            <label class="chip-label"><input type="radio" name="q_${q.id}" value="Yes" required> Yes</label>
+                            <label class="chip-label"><input type="radio" name="q_${q.id}" value="No" required> No</label>
+                        </div>
+                    `;
+                } else if (qType === 'multiple_choice') {
+                    html += `<div class="chip-group" style="flex-direction: column;">`;
+                    (q.choices || []).forEach(c => {
+                        html += `<label class="chip-label"><input type="radio" name="q_${q.id}" value="${c}" required> ${c}</label>`;
+                    });
+                    html += `</div>`;
+                } else {
+                    html += `<textarea name="q_${q.id}" required placeholder="Write your comments..."></textarea>`;
+                }
+
+                html += `</div>`;
+            });
+
+            html += `
+                    <button type="submit" class="button" style="width: 100%; margin-top: 14px;">Submit Survey to Firebase</button>
+                </form>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        async function submitSurvey(e, surveyId) {
+            e.preventDefault();
+            if (!isSurveyOpen(appData.surveys[surveyId])) { alert('This survey is closed.'); return; }
+            const form = e.target;
+            const answers = {};
+            const formData = new FormData(form);
+
+            for (const [key, value] of formData.entries()) {
+                answers[key.replace('q_', '')] = value;
+            }
+
+            const subId = `${surveyId}_${currentUser.uid}`;
+            const submission = {
+                id: subId,
+                surveyId,
+                memberId: currentUser.data?.accountNumber || currentUser.id,
+                memberUid: currentUser.uid,
+                submittedAt: new Date().toISOString(),
+                answers: answers
+            };
+
+            try {
+                const response = await firebaseDbFetch(`survey_submissions/${encodeURIComponent(subId)}`, {method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(submission)});
+                if (!response.ok) throw new Error(`Firebase returned ${response.status}`);
+                appData.survey_submissions[subId] = submission;
+                alert('Thank you! Your survey responses have been submitted to Firebase.');
+                openMemberSurveys();
+            } catch (err) {
+                alert('Submission error: ' + err.message);
+            }
+        }
+
+        // ---------------- STAFF PORTAL ----------------
+        function toggleStaffDrawer(open) {
+            const sidebar = document.getElementById('staff-shared-sidebar');
+            const backdrop = document.getElementById('staff-sidebar-backdrop');
+            if (!sidebar || !backdrop) return;
+            if (open) {
+                sidebar.classList.add('open');
+                backdrop.classList.add('active');
+            } else {
+                sidebar.classList.remove('open');
+                backdrop.classList.remove('active');
+            }
+        }
+
+        function renderStaffPortal() {
+            document.getElementById('landing-view').style.display = 'none';
+            document.getElementById('member-view').style.display = 'none';
+            document.getElementById('staff-view').style.display = 'block';
+            document.body.className = 'staff-page';
+
+            updateStaffMetrics();
+            renderStaffRecentActivity();
+            renderStaffMembersTable();
+            renderStaffSurveys();
+            renderStaffReports();
+            renderStaffUpdates();
+        }
+
+        function switchStaffTab(tab) {
+            toggleStaffDrawer(false);
+            document.querySelectorAll('.staff-menu a').forEach(a => a.classList.remove('active'));
+            document.getElementById('staff-sec-overview').style.display = 'none';
+            document.getElementById('staff-sec-members').style.display = 'none';
+            document.getElementById('staff-sec-surveys').style.display = 'none';
+            document.getElementById('staff-sec-reports').style.display = 'none';
+            document.getElementById('staff-sec-updates').style.display = 'none';
+
+            if (tab === 'members') {
+                document.getElementById('staff-sec-members').style.display = 'block';
+                document.getElementById('staff-nav-members').classList.add('active');
+                renderStaffMembersTable();
+            } else if (tab === 'surveys') {
+                document.getElementById('staff-sec-surveys').style.display = 'block';
+                document.getElementById('staff-nav-surveys').classList.add('active');
+                renderStaffSurveys();
+            } else if (tab === 'reports') {
+                document.getElementById('staff-sec-reports').style.display = 'block';
+                document.getElementById('staff-nav-reports').classList.add('active');
+                renderStaffReports();
+            } else if (tab === 'updates') {
+                document.getElementById('staff-sec-updates').style.display = 'block';
+                document.getElementById('staff-nav-updates').classList.add('active');
+                renderStaffUpdates();
+            } else {
+                document.getElementById('staff-sec-overview').style.display = 'block';
+                document.getElementById('staff-nav-overview').classList.add('active');
+                updateStaffMetrics();
+                renderStaffRecentActivity();
+            }
+        }
+
+        function updateStaffMetrics() {
+            const totalMembers = Object.keys(appData.members || {}).length;
+            const activeSurveys = Object.keys(appData.surveys || {}).length;
+            const totalSubmissions = Object.keys(appData.survey_submissions || {}).length;
+
+            document.getElementById('metric-total-members').textContent = totalMembers;
+            document.getElementById('metric-active-surveys').textContent = activeSurveys;
+            document.getElementById('metric-total-submissions').textContent = totalSubmissions;
+        }
+
+        function renderStaffRecentActivity() {
+            const container = document.getElementById('staff-recent-members');
+            if (!container) return;
+            container.innerHTML = '';
+            const members = Object.values(appData.members || {});
+
+            if (members.length === 0) {
+                container.innerHTML = '<p class="empty-state">No member activity yet.</p>';
+                return;
+            }
+
+            members.slice(0, 5).forEach(m => {
+                const name = `${m.first_name || m.firstName || ''} ${m.last_name || m.lastName || ''}`;
+                const row = document.createElement('div');
+                row.className = 'activity-row';
+                row.innerHTML = `
+                    <span class="activity-dot"></span>
+                    <div>
+                        <strong>${name}</strong>
+                        <p>Member record &middot; ${m.account_number || m.accountNumber}</p>
+                    </div>
+                    <time>Active</time>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function renderStaffMembersTable(filter = '') {
+            const tbody = document.getElementById('staff-members-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            const members = Object.values(appData.members || {});
+            const q = filter.toLowerCase();
+
+            members.filter(m => {
+                const name = `${m.first_name || m.firstName || ''} ${m.last_name || m.lastName || ''}`.toLowerCase();
+                const acc = (m.account_number || m.accountNumber || '').toLowerCase();
+                return name.includes(q) || acc.includes(q);
+            }).forEach(m => {
+                const acc = m.account_number || m.accountNumber;
+                const name = `${m.first_name || m.firstName || ''} ${m.last_name || m.lastName || ''}`;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${acc}</strong></td>
+                    <td>${name}</td>
+                    <td>${m.contact_number || m.contactNumber || '—'}</td>
+                    <td>${m.civil_status || m.civilStatus || 'Single'}</td>
+                    <td>${m.updated_at ? new Date(m.updated_at).toLocaleDateString() : 'Recent'}</td>
+                    <td>
+                        <button class="button secondary" style="padding: 6px 12px; font-size: 12px;" onclick="editStaffMember('${acc}')">Edit</button>
+                        <button class="button secondary danger" style="padding: 6px 12px; font-size: 12px; margin-left: 6px;" onclick="deleteMember('${acc}')">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterStaffMembers(val) {
+            renderStaffMembersTable(val);
+        }
+
+        function openAddMemberModal() {
+            toggleStaffDrawer(false);
+            openEditProfileModal({ account_number: 'Auto-generated' });
+        }
+
+        function editStaffMember(acc) {
+            const m = appData.members[acc] || Object.values(appData.members).find(member => (member.accountNumber || member.account_number) === acc);
+            if (m) openEditProfileModal(m);
+        }
+
+        async function deleteMember(acc) {
+            if (!confirm(`Are you sure you want to delete member ${acc}?`)) return;
+            const entry = Object.entries(appData.members).find(([key, member]) => key === acc || (member.accountNumber || member.account_number) === acc);
+            const profileKey = entry?.[0] || acc;
+            try {
+                const response = await firebaseDbFetch(`members/${encodeURIComponent(profileKey)}`, { method: 'DELETE' });
+                if (!response.ok) throw new Error(`Firebase returned ${response.status}`);
+                delete appData.members[profileKey];
+                renderStaffMembersTable();
+                updateStaffMetrics();
+                alert(`Member ${acc} deleted from Firebase.`);
+            } catch (err) {
+                alert('Delete error: ' + err.message);
+            }
+        }
+
+        function renderStaffSurveys() {
+            const tbody = document.getElementById('staff-surveys-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            const surveys = Object.entries(appData.surveys || {});
+            const submissions = Object.values(appData.survey_submissions || {});
+
+            if (!surveys.length) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 24px; color: var(--muted);">No surveys found. Create one using the form above.</td></tr>';
+                return;
+            }
+
+            surveys.forEach(([key, s]) => {
+                const surveyId = s.id || key;
+                const responses = submissions.filter(sub => (sub.survey_id === surveyId || sub.surveyId === surveyId));
+                const statusText = (s.status || 'draft').toLowerCase();
+                const statusBadge = (statusText === 'active') ? '<span style="color: #2e7d32; font-weight:700;">Active</span>' :
+                                    (statusText === 'draft') ? '<span style="color: var(--muted); font-weight:700;">Draft</span>' :
+                                    '<span style="color: var(--danger); font-weight:700;">Inactive</span>';
+                const schedule = s.opensAt || s.opens_at ? (s.opensAt || s.opens_at).slice(0, 16) : 'Not set';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${escapeHTML(s.title || 'Untitled Survey')}</strong></td>
+                    <td>${statusBadge}</td>
+                    <td>${escapeHTML(schedule)}</td>
+                    <td><strong>${responses.length}</strong></td>
+                    <td>
+                        <a href="javascript:void(0)" style="font-weight:700; color:var(--rose);" onclick="openSurveyReport('${escapeHTML(surveyId)}')">Results</a> &middot; 
+                        <a class="danger" href="javascript:void(0)" style="font-weight:700;" onclick="toggleSurveyStatus('${escapeHTML(key)}')">${statusText === 'inactive' ? 'Activate' : 'Deactivate'}</a>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openSurveyReport(surveyId) {
+            switchStaffTab('reports');
+            if (surveyId) {
+                setTimeout(() => {
+                    const el = document.getElementById(`report-${surveyId}`);
+                    if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        el.style.outline = '2px solid var(--rose)';
+                        setTimeout(() => el.style.outline = '', 2500);
+                    }
+                }, 100);
+            }
+        }
+
+        async function toggleSurveyStatus(key) {
+            const s = appData.surveys[key];
+            if (!s) return;
+            const current = (s.status || 'draft').toLowerCase();
+            const newStatus = (current === 'active') ? 'inactive' : 'active';
+            try {
+                await firebaseDbFetch(`surveys/${encodeURIComponent(key)}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus, updatedAt: new Date().toISOString() })
+                });
+                s.status = newStatus;
+                renderStaffSurveys();
+                renderStaffReports();
+                alert(`Survey marked as ${newStatus}.`);
+            } catch (err) {
+                alert('Could not update survey: ' + err.message);
+            }
+        }
+
+        function escapeHTML(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+        }
+
+        function addStaffSurveyQuestion() {
+            const container = document.getElementById('staff-survey-questions');
+            if (!container) return;
+            const qCount = container.children.length + 1;
+            const row = document.createElement('div');
+            row.className = 'card';
+            row.style.cssText = 'margin:14px 0;padding:18px;background:#ffffffa8;';
+            row.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <strong>Question ${qCount}</strong>
+                    <button class="button secondary" style="padding:4px 10px; font-size:12px; color:var(--danger);" type="button" onclick="this.closest('.card').remove()">&times; Remove</button>
+                </div>
+                <label>Question text<textarea class="survey-question-text" required placeholder="Enter question text..."></textarea></label>
+                <div class="two-col">
+                    <label>Question type
+                        <select class="survey-question-type" onchange="this.closest('.card').querySelector('.survey-question-choices-wrap').hidden = (this.value !== 'multiple_choice')">
+                            <option value="rating">Rating scale (1–5 stars)</option>
+                            <option value="yes_no">Yes / No</option>
+                            <option value="multiple_choice">Multiple choice</option>
+                            <option value="short_answer">Short answer</option>
+                        </select>
+                    </label>
+                    <label class="survey-question-choices-wrap" hidden>Choices (one per line)
+                        <textarea class="survey-question-choices" placeholder="Choice 1&#10;Choice 2&#10;Choice 3"></textarea>
+                    </label>
+                </div>
+            `;
+            container.appendChild(row);
+        }
+
+        async function saveStaffSurvey(event) {
+            event.preventDefault();
+            const title = document.getElementById('staff-survey-title').value.trim();
+            const opensAt = document.getElementById('staff-survey-opens').value;
+            const closesAt = document.getElementById('staff-survey-closes').value;
+            if (new Date(closesAt) <= new Date(opensAt)) { alert('Closing date must be after the opening date.'); return; }
+            
+            const questionNodes = document.querySelectorAll('#staff-survey-questions .card');
+            if (!questionNodes.length) { alert('Please add at least one question to the survey.'); return; }
+
+            const questions = {};
+            questionNodes.forEach((row, index) => {
+                const qId = `q${index + 1}`;
+                const qType = row.querySelector('.survey-question-type').value;
+                const qText = row.querySelector('.survey-question-text').value.trim();
+                const qObj = {
+                    id: qId,
+                    order: index + 1,
+                    text: qText,
+                    type: qType,
+                    isRequired: true
+                };
+                if (qType === 'multiple_choice') {
+                    qObj.choices = row.querySelector('.survey-question-choices').value.split('\n').map(x => x.trim()).filter(Boolean);
+                }
+                questions[qId] = qObj;
+            });
+
+            const surveyKey = `survey_${Date.now()}`;
+            const survey = {
+                id: surveyKey,
+                title: title,
+                description: document.getElementById('staff-survey-description').value.trim(),
+                status: document.getElementById('staff-survey-status').value,
+                opensAt: opensAt.replace('T', ' ') + ':00',
+                closesAt: closesAt.replace('T', ' ') + ':00',
+                createdBy: currentUser?.id || 'admin',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                questions: questions
+            };
+
+            try {
+                const response = await firebaseDbFetch(`surveys/${encodeURIComponent(surveyKey)}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(survey)
+                });
+                if (!response.ok) throw new Error(`Firebase returned ${response.status}`);
+                appData.surveys[surveyKey] = survey;
+                event.target.reset();
+                document.getElementById('staff-survey-questions').innerHTML = '';
+                addStaffSurveyQuestion();
+                renderStaffSurveys();
+                updateStaffMetrics();
+                renderStaffReports();
+                renderStaffUpdates();
+                alert('Survey saved successfully to Firebase!');
+            } catch (err) {
+                alert('Could not save survey: ' + err.message);
+            }
+        }
+
+        function renderStaffReports() {
+            const target = document.getElementById('staff-reports-content');
+            if (!target) return;
+            const surveys = Object.entries(appData.surveys || {});
+            const submissions = Object.values(appData.survey_submissions || {});
+
+            if (!surveys.length) {
+                target.innerHTML = '<section class="card"><p class="empty-state">No surveys available to report.</p></section>';
+                return;
+            }
+
+            let html = '';
+            surveys.forEach(([key, s]) => {
+                const surveyId = s.id || key;
+                const responses = submissions.filter(sub => (sub.survey_id === surveyId || sub.surveyId === surveyId));
+                const total = responses.length;
+                const questions = Array.isArray(s.questions) ? s.questions : Object.values(s.questions || {});
+
+                html += `
+                    <div id="report-${escapeHTML(surveyId)}" style="margin-bottom: 44px; padding-bottom: 24px; border-bottom: 2px dashed rgba(181, 93, 130, 0.25);">
+                        <div class="page-actions" style="margin-bottom: 18px;">
+                            <div>
+                                <p class="eyebrow">Survey results</p>
+                                <h1 style="margin-bottom: 6px;">${escapeHTML(s.title || 'Survey')}</h1>
+                                <p style="color: var(--muted);">${total} submitted response${total === 1 ? '' : 's'}</p>
+                            </div>
+                            <button class="button" onclick="window.print()">Print report</button>
+                        </div>
+                `;
+
+                if (!questions.length) {
+                    html += `<section class="card result-card"><p>No questions recorded for this survey.</p></section>`;
+                } else {
+                    questions.forEach((q, qIndex) => {
+                        html += `
+                            <section class="card result-card" style="margin-bottom: 16px;">
+                                <h2>${qIndex + 1}. ${escapeHTML(q.text || q.question_text || '')}</h2>
+                        `;
+
+                        // Aggregate responses for this question
+                        const counts = {};
+                        responses.forEach(sub => {
+                            const ans = (sub.answers || {})[q.id] ?? (sub.answers || {})[q.text] ?? '';
+                            if (ans !== '' && ans !== undefined) {
+                                counts[ans] = (counts[ans] || 0) + 1;
+                            }
+                        });
+
+                        // Pre-populate predefined options so 0% shows nicely
+                        let optionsList = [];
+                        if (q.type === 'yes_no') {
+                            optionsList = ['Yes', 'No'];
+                        } else if (q.type === 'rating') {
+                            optionsList = ['5', '4', '3', '2', '1'];
+                        } else if (Array.isArray(q.choices)) {
+                            optionsList = q.choices;
+                        }
+
+                        optionsList.forEach(opt => {
+                            if (counts[opt] === undefined) counts[opt] = 0;
+                        });
+
+                        const countEntries = Object.entries(counts);
+                        if (!countEntries.length) {
+                            html += `<p style="color: var(--muted);">No answers yet.</p>`;
+                        } else {
+                            countEntries.sort((a, b) => b[1] - a[1]);
+                            countEntries.forEach(([answerText, count]) => {
+                                const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                                html += `
+                                    <div class="result-line">
+                                        <div>
+                                            <strong>${escapeHTML(answerText)}</strong>
+                                            <span>${count} response${count === 1 ? '' : 's'}</span>
+                                        </div>
+                                        <div class="result-bar"><i style="width: ${pct}%;"></i></div>
+                                        <b>${pct}%</b>
+                                    </div>
+                                `;
+                            });
+                        }
+
+                        html += `</section>`;
+                    });
+                }
+
+                html += `</div>`;
+            });
+
+            target.innerHTML = html;
+        }
+
+        function renderStaffUpdates() {
+            const target = document.getElementById('staff-updates-content');
+            if (!target) return;
+            const updates = [];
+            Object.entries(appData.members || {}).forEach(([id,m]) => updates.push({date:m.updatedAt || m.updated_at || m.createdAt, text:`Member record updated: ${(m.firstName || m.first_name || '')} ${(m.lastName || m.last_name || '')} (${id})`}));
+            Object.entries(appData.surveys || {}).forEach(([id,s]) => updates.push({date:s.updatedAt || s.createdAt || s.created_at, text:`Survey available: ${s.title || id}`}));
+            Object.values(appData.survey_submissions || {}).forEach(s => updates.push({date:s.submittedAt || s.submitted_at, text:`Survey response received from ${s.memberName || s.member_name || s.memberId || 'a member'}`}));
+            updates.sort((a,b) => new Date(b.date || 0) - new Date(a.date || 0));
+            target.innerHTML = updates.length ? `<ul>${updates.slice(0,20).map(item => `<li style="margin:12px 0"><strong>${escapeHTML(item.text)}</strong><br><small>${escapeHTML(item.date || 'Date unavailable')}</small></li>`).join('')}</ul>` : '<p class="empty-state">There are no updates yet.</p>';
+        }
+
+        // Initialize first survey question in create form
+        addStaffSurveyQuestion();
+    </script>
+</body>
+</html>

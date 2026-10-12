@@ -1,0 +1,11 @@
+{
+  "name": "coopconnect-firebase-admin-tools",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": { "migrate:dry-run": "node migrate-mysql.mjs", "migrate:apply": "node migrate-mysql.mjs --apply" },
+  "dependencies": {
+    "firebase-admin": "^13.0.0",
+    "mysql2": "^3.11.0"
+  }
+}

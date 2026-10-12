@@ -1,0 +1,138 @@
+{
+  "cooperative_portal": {
+    "staff": {
+      "admin": {
+        "username": "admin",
+        "fullName": "Cooperative Administrator",
+        "role": "staff",
+        "createdAt": "2026-09-01T08:00:00+08:00"
+      }
+    },
+    "members": {
+      "2026-0001": {
+        "accountNumber": "2026-0001",
+        "forcePasswordChange": true,
+        "firstName": "Maria",
+        "lastName": "Santos",
+        "middleName": "Cruz",
+        "extensionName": "",
+        "civilStatus": "Married",
+        "address": "Malolos, Bulacan",
+        "contactNumber": "09171234567",
+        "birthday": "2000-05-18",
+        "occupation": "Teacher",
+        "employer": "DepEd Bulacan",
+        "employerAddress": "Malolos City, Bulacan",
+        "spouseName": "Juan Santos",
+        "spouseOccupation": "Civil Engineer",
+        "spouseEmployer": "Bulacan Builders Co.",
+        "fatherName": "Roberto Cruz",
+        "motherName": "Elena Cruz",
+        "referenceOne": "Pedro Reyes (09181112233)",
+        "referenceTwo": "Ana Mendoza (09192223344)",
+        "photo": "",
+        "createdAt": "2026-09-01T08:00:00+08:00",
+        "updatedAt": "2026-09-28T14:20:00+08:00",
+        "children": {
+          "child_1": {
+            "name": "Mark Santos",
+            "age": 6
+          },
+          "child_2": {
+            "name": "Angela Santos",
+            "age": 4
+          }
+        }
+      },
+      "2026-0002": {
+        "accountNumber": "2026-0002",
+        "forcePasswordChange": false,
+        "firstName": "Danryle",
+        "lastName": "Martin",
+        "middleName": "Reyes",
+        "extensionName": "",
+        "civilStatus": "Single",
+        "address": "Guiguinto, Bulacan",
+        "contactNumber": "09189876543",
+        "birthday": "2002-08-12",
+        "occupation": "Software Developer",
+        "employer": "Tech Hub Philippines",
+        "employerAddress": "Clark, Pampanga",
+        "spouseName": "",
+        "spouseOccupation": "",
+        "spouseEmployer": "",
+        "fatherName": "Danilo Martin",
+        "motherName": "Teresita Martin",
+        "referenceOne": "Jose Rizal (09170001111)",
+        "referenceTwo": "Andres Bonifacio (09180002222)",
+        "photo": "",
+        "createdAt": "2026-09-10T10:00:00+08:00",
+        "updatedAt": "2026-09-29T16:45:00+08:00",
+        "children": {}
+      }
+    },
+    "surveys": {
+      "survey_1": {
+        "id": "survey_1",
+        "title": "Annual Member Satisfaction & Loan Services Survey",
+        "description": "Please take a moment to evaluate your experience with our cooperative loans, savings, and member benefits.",
+        "status": "active",
+        "opensAt": "2026-09-01 08:00:00",
+        "closesAt": "2026-12-31 23:59:59",
+        "createdBy": "admin",
+        "createdAt": "2026-09-01 08:00:00",
+        "updatedAt": "2026-09-15 10:00:00",
+        "questions": {
+          "q1": {
+            "id": "q1",
+            "order": 1,
+            "text": "How satisfied are you with our overall customer service and counter transactions?",
+            "type": "rating",
+            "isRequired": true
+          },
+          "q2": {
+            "id": "q2",
+            "order": 2,
+            "text": "Have you availed of any cooperative loan or emergency assistance in the past year?",
+            "type": "yes_no",
+            "isRequired": true
+          },
+          "q3": {
+            "id": "q3",
+            "order": 3,
+            "text": "Which new service or benefit would you most like to see implemented?",
+            "type": "multiple_choice",
+            "isRequired": true,
+            "choices": [
+              "Online loan application & approval",
+              "Higher dividend rates on share capital",
+              "Healthcare & medical assistance card",
+              "Educational subsidy / scholarship"
+            ]
+          },
+          "q4": {
+            "id": "q4",
+            "order": 4,
+            "text": "Any additional suggestions or comments for cooperative leadership:",
+            "type": "short_answer",
+            "isRequired": false
+          }
+        }
+      }
+    },
+    "survey_submissions": {
+      "survey_1_2026-0002": {
+        "surveyId": "survey_1",
+        "memberId": "2026-0002",
+        "memberName": "Danryle Martin",
+        "submittedAt": "2026-09-29 17:10:00",
+        "answers": {
+          "q1": "5",
+          "q2": "Yes",
+          "q3": "Online loan application & approval",
+          "q4": "Great mobile app initiative! Very convenient."
+        }
+      }
+    }
+  }
+}

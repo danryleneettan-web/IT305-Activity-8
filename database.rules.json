@@ -1,0 +1,32 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "cooperative_portal": {
+      ".read": "auth != null && auth.token.role === 'staff'",
+      ".write": "auth != null && auth.token.role === 'staff'",
+      "members": {
+        "$account": {
+          ".read": "auth != null && (auth.token.role === 'staff' || data.child('authUid').val() === auth.uid)",
+          ".write": "auth != null && (auth.token.role === 'staff' || (!data.exists() && $account === auth.uid && newData.child('authUid').val() === auth.uid && newData.child('id').val() === auth.uid) || (data.exists() && data.child('authUid').val() === auth.uid && newData.exists() && newData.child('authUid').val() === auth.uid && newData.child('id').val() === $account))",
+          ".validate": "newData.child('id').val() === $account && newData.child('accountNumber').exists() && !newData.child('password').exists() && !newData.child('password_hash').exists()"
+        }
+      },
+      "surveys": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.token.role === 'staff'"
+      },
+      "survey_submissions": {
+        "$submission": {
+          ".read": "auth != null && (auth.token.role === 'staff' || data.child('memberUid').val() === auth.uid)",
+          ".write": "auth != null && (auth.token.role === 'staff' || (auth.token.role !== 'staff' && !data.exists() && newData.child('memberUid').val() === auth.uid && (root.child('cooperative_portal/members').child(auth.uid).child('authUid').val() === auth.uid || root.child('cooperative_portal/members').child(newData.child('memberId').val()).child('authUid').val() === auth.uid) && root.child('cooperative_portal/surveys').child(newData.child('surveyId').val()).child('status').val() === 'active'))",
+          ".validate": "!newData.child('password').exists()"
+        }
+      },
+      "staff": {
+        ".read": "auth != null && auth.token.role === 'staff'",
+        ".write": false
+      }
+    }
+  }
+}
