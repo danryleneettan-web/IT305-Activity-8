@@ -30,16 +30,6 @@ Both platforms communicate with the **same Firebase project**, ensuring that use
 
 ---
 
-## 👥 Group Members & Participation
-
-| Member | Role / Area | Contribution |
-|---|---|---|
-| Danryle Co / Martin | Full-Stack & Integration | Firebase REST integration, cross-platform synchronization, and documentation |
-| [Member 2] | Mobile Development | Flutter mobile application UI, survey screens, and profile management |
-| [Member 3] | Web Development | PHP & HTML/CSS responsive views, registration flows, and reports |
-| [Member 4] | QA & Documentation | Testing, security rules verification, screenshots, and video presentation |
-
----
 
 ## 🚀 Key Features
 
