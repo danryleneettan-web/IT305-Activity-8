@@ -23,10 +23,10 @@ Both platforms communicate with the **same Firebase project**, ensuring that use
 
 ## 🔗 Project Links
 
-* **GitHub Repository:** [https://github.com/danryleneettan-web/IT305-Activity-8](https://github.com/danryleneettan-web/IT305-Activity-8)
-* **Hosted Web Application:** [https://coop-692bf.web.app](https://coop-692bf.web.app)
-* **Firebase Console:** [https://console.firebase.google.com/project/coop-692bf/overview](https://console.firebase.google.com/project/coop-692bf/overview)
-* **Video Presentation:** *[Insert your YouTube or Google Drive link here]*
+* **GitHub Repository:** [https://github.com/danryleneettan-web/IT305-Activity-8]
+* **Hosted Web Application:** [https://coop-692bf.web.app]
+* **Firebase Console:** [https://console.firebase.google.com/project/coop-692bf/overview]
+* **Video Presentation:** *[https://drive.google.com/drive/folders/18d7resILlJ8HCbdb36j5dm2JL-qP9TJC?usp=sharing]*
 
 ---
 
